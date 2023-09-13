@@ -1,10 +1,12 @@
 import React, { useRef, useEffect } from 'react';
 import * as THREE from 'three';
+import { GLTFLoader } from 'three/examples/jsm/loaders/GLTFLoader';
 
 export default function ThreeScene() {
   const sceneRef = useRef(null);
 
   useEffect(() => {
+    // scene
     const scene = new THREE.Scene();
     const camera = new THREE.PerspectiveCamera(
       75,
@@ -19,7 +21,16 @@ export default function ThreeScene() {
 
     camera.position.z = 5;
 
-    renderer.render(scene, camera);
+    const loader = new GLTFLoader();
+    loader.load(
+      'bun.gltf',
+      (gltf) => {
+        scene.add(gltf.scene);
+        renderer.render(scene, camera);
+      },
+      undefined,
+      (error) => console.error('Erreur lors du chargement du modèle', error)
+    );
   }, []);
   return <div ref={sceneRef}></div>;
 }
